@@ -48,6 +48,9 @@ var (
 	ErrCandiNameInvalid       = errors.New("candidate's name should consist of digits and lowercase letters")
 	ErrCandiInfoDup           = errors.New("candidate's name, website url or node url is duplicated with a registered candidate")
 	ErrCandiAlreadyRegistered = errors.New("candidate is already registered")
+
+	// special error for wavm
+	ErrExecutionReverted = errors.New("wavm: execution reverted")
 )
 
 var (
@@ -217,7 +220,7 @@ func (e *Election) Run(ctx inter.ChainContext, input []byte) ([]byte, error) {
 
 	electionABI, err := abi.JSON(strings.NewReader(AbiJSON))
 	if err != nil {
-		return nil, err
+		return nil, ErrExecutionReverted
 	}
 
 	c := newElectionContext(ctx)
@@ -289,9 +292,8 @@ func (e *Election) Run(ctx inter.ChainContext, input []byte) ([]byte, error) {
 		log.Error("call election contract err:", "method", methodName, "err", err)
 	} else if methodName == "None" {
 		log.Error("call election contract err: method doesn't exist")
-		err = fmt.Errorf("call election contract err: method doesn't exist")
 	}
-	return nil, err
+	return nil, ErrExecutionReverted
 }
 
 func (ec electionContext) registerWitness(address common.Address, url []byte, website []byte, name []byte) error {

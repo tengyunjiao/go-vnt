@@ -17,21 +17,18 @@
 package wavm
 
 import (
-	"bytes"
 	"encoding/json"
 	"math/big"
 	"sync/atomic"
 	"time"
 
-	wasmcontract "github.com/vntchain/go-vnt/core/wavm/contract"
-	"github.com/vntchain/go-vnt/core/wavm/gas"
-
 	"github.com/vntchain/go-vnt/common"
 	"github.com/vntchain/go-vnt/core/state"
 	"github.com/vntchain/go-vnt/core/vm"
-
-	"github.com/vntchain/go-vnt/core/vm/interface"
+	inter "github.com/vntchain/go-vnt/core/vm/interface"
+	wasmcontract "github.com/vntchain/go-vnt/core/wavm/contract"
 	errorsmsg "github.com/vntchain/go-vnt/core/wavm/errors"
+	"github.com/vntchain/go-vnt/core/wavm/gas"
 	"github.com/vntchain/go-vnt/core/wavm/storage"
 	"github.com/vntchain/go-vnt/core/wavm/utils"
 	"github.com/vntchain/go-vnt/crypto"
@@ -41,7 +38,6 @@ import (
 )
 
 var emptyCodeHash = crypto.Keccak256Hash(nil)
-var electionAddress = common.BytesToAddress([]byte{9})
 
 type WAVM struct {
 	// Context provides auxiliary blockchain related information
@@ -325,7 +321,7 @@ func (wavm *WAVM) Call(caller vm.ContractRef, addr common.Address, input []byte,
 	// this also counts for code storage gas errors.
 	if err != nil {
 		wavm.StateDB.RevertToSnapshot(snapshot)
-		if err.Error() != errorsmsg.ErrExecutionReverted.Error() && !bytes.Equal(to.Address().Bytes(), electionAddress.Bytes()) {
+		if err.Error() != errorsmsg.ErrExecutionReverted.Error() {
 			contract.UseGas(contract.Gas)
 		}
 	}
