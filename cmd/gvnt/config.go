@@ -25,14 +25,13 @@ import (
 	"reflect"
 	"unicode"
 
-	cli "gopkg.in/urfave/cli.v1"
-
 	"github.com/naoina/toml"
 	"github.com/vntchain/go-vnt/cmd/utils"
 	"github.com/vntchain/go-vnt/node"
 	"github.com/vntchain/go-vnt/params"
 	"github.com/vntchain/go-vnt/vnt"
 	whisper "github.com/vntchain/go-vnt/whisper/whisperv6"
+	cli "gopkg.in/urfave/cli.v1"
 )
 
 var (
@@ -153,8 +152,7 @@ func makeFullNode(ctx *cli.Context) *node.Node {
 
 	// Whisper must be explicitly enabled by specifying at least 1 whisper flag or in dev mode
 	shhEnabled := enableWhisper(ctx)
-	shhAutoEnabled := !ctx.GlobalIsSet(utils.WhisperEnabledFlag.Name)
-	if shhEnabled || shhAutoEnabled {
+	if shhEnabled {
 		if ctx.GlobalIsSet(utils.WhisperMaxMessageSizeFlag.Name) {
 			cfg.Shh.MaxMessageSize = uint32(ctx.Int(utils.WhisperMaxMessageSizeFlag.Name))
 		}
