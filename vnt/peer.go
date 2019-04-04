@@ -340,8 +340,11 @@ func (p *peer) Handshake(network uint64, td *big.Int, head common.Hash, genesis 
 		})
 	}()
 	go func() {
-		errc <- p.readStatus(network, &status, genesis)
-		p.Log().Info("yhx-test vnt protocol handshake", "encounter error", errc)
+		err := p.readStatus(network, &status, genesis)
+		errc <- err
+		if err != nil {
+			p.Log().Info("yhx-test vnt protocol handshake", "encounter error", err.Error())
+		}
 	}()
 	timeout := time.NewTimer(handshakeTimeout)
 	defer timeout.Stop()
