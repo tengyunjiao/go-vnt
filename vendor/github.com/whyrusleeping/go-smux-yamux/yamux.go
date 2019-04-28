@@ -55,6 +55,8 @@ var DefaultTransport = (*Transport)(&yamux.Config{
 })
 
 func (t *Transport) NewConn(nc net.Conn, isServer bool) (smux.Conn, error) {
+	_,file,line,_ := runtime.Caller(1)
+	fmt.Printf("yamux.go:Transport.NewConn() caller: %s-%d", file, line)
 	var s *yamux.Session
 	var err error
 	if isServer {

@@ -265,12 +265,25 @@ func (pm *ProtocolManager) Start(maxPeers int) {
 func (pm *ProtocolManager) Stop() {
 	log.Info("Stopping VNT protocol")
 
+	log.Info("Stopping txs subscription...")
 	pm.txsSub.Unsubscribe()        // quits txBroadcastLoop
-	pm.minedBlockSub.Unsubscribe() // quits blockBroadcastLoop
-	pm.bftMsgSub.Unsubscribe()
-	pm.bftPeerSub.Unsubscribe()
+	log.Info("Stopped txs subscription")
 
+	log.Info("Stopping minedBlock subscription...")
+	pm.minedBlockSub.Unsubscribe() // quits blockBroadcastLoop
+	log.Info("Stopped minedBlock subscription")
+
+	log.Info("Stopping bftMsg subscription...")
+	pm.bftMsgSub.Unsubscribe()
+	log.Info("Stopped bftMsg subscription")
+
+	log.Info("Stopping bftPeer subscription...")
+	pm.bftPeerSub.Unsubscribe()
+	log.Info("Stopped bftPeer subscription")
+
+	log.Info("Stopping urlsCh...")
 	close(pm.urlsCh)
+	log.Info("Stopped urlsCh")
 
 	// Quit the sync loop.
 	// After this send has completed, no new peers will be accepted.
@@ -283,9 +296,12 @@ func (pm *ProtocolManager) Stop() {
 	// This also closes the gate for any new registrations on the peer set.
 	// sessions which are already established but not added to pm.peers yet
 	// will exit when they try to register.
+	log.Info("Stopping peers: ", "peers", pm.peers)
 	pm.peers.Close()
+	log.Info("Stopped peers")
 
 	// Wait for all peer handler goroutines and the loops to come down.
+	log.Info("Waiting for stopping...")
 	pm.wg.Wait()
 
 	log.Info("VNT protocol stopped")

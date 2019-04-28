@@ -201,6 +201,7 @@ func (p *Peer) run() (remoteRequested bool, err error) {
 		proto := msger.protocol
 		m := msger
 		go func() {
+			log.Info("Peer run(), will run protocal", "protocal", proto.Name)
 			p.wg.Add(1)
 			err := proto.Run(p, m)
 			log.Info("p2p-test", "run protocol error log", err)
