@@ -1,6 +1,8 @@
 package sm_yamux
 
 import (
+	"runtime"
+	"fmt"
 	"io/ioutil"
 	"net"
 	"time"
