@@ -328,6 +328,9 @@ func gvnt(ctx *cli.Context) error {
 // it unlocks any requested accounts, and starts the RPC/IPC interfaces and the
 // miner.
 func startNode(ctx *cli.Context, stack *node.Node) {
+	_,file,line,_ := runtime.Caller(1)
+	fmt.Printf("main.go:startNode() caller: %s-%d \n", file, line)
+
 	debug.Memsize.Add("node", stack)
 
 	// Start up the node itself

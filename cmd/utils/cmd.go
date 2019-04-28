@@ -64,6 +64,9 @@ func Fatalf(format string, args ...interface{}) {
 }
 
 func StartNode(stack *node.Node) {
+	_,file,line,_ := runtime.Caller(1)
+	fmt.Printf("cmd.go:StartNode() caller: %s-%d \n", file, line)
+
 	if err := stack.Start(); err != nil {
 		Fatalf("Error starting protocol stack: %v", err)
 	}

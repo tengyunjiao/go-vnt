@@ -1,6 +1,8 @@
 package tcp
 
 import (
+	"fmt"
+	"runtime"
 	"context"
 	"time"
 
@@ -69,6 +71,9 @@ func (t *TcpTransport) maDial(ctx context.Context, raddr ma.Multiaddr) (manet.Co
 
 // Dial dials the peer at the remote address.
 func (t *TcpTransport) Dial(ctx context.Context, raddr ma.Multiaddr, p peer.ID) (tpt.Conn, error) {
+	_,file,line,_ := runtime.Caller(1)
+	fmt.Printf("tcp.go:TcpTransport.Dial() caller: %s-%d \n", file, line)
+
 	conn, err := t.maDial(ctx, raddr)
 	if err != nil {
 		return nil, err

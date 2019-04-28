@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"runtime"
 	"sync"
 	"time"
 
@@ -381,6 +382,9 @@ func (s *Swarm) dialAddrs(ctx context.Context, p peer.ID, remoteAddrs <-chan ma.
 // it is able, respecting the various different types of rate
 // limiting that occur without using extra goroutines per addr
 func (s *Swarm) limitedDial(ctx context.Context, p peer.ID, a ma.Multiaddr, resp chan dialResult) {
+	_,file,line,_ := runtime.Caller(1)
+	fmt.Printf("swarm_dial.go:Swarm.limitedDial() caller: %s-%d \n", file, line)
+
 	s.limiter.AddDialJob(&dialJob{
 		addr: a,
 		peer: p,
@@ -391,6 +395,9 @@ func (s *Swarm) limitedDial(ctx context.Context, p peer.ID, a ma.Multiaddr, resp
 
 func (s *Swarm) dialAddr(ctx context.Context, p peer.ID, addr ma.Multiaddr) (transport.Conn, error) {
 	// Just to double check. Costs nothing.
+	_,file,line,_ := runtime.Caller(1)
+	fmt.Printf("swarm_dial.go:Swarm.dialAddr() caller: %s-%d \n", file, line)
+
 	if s.local == p {
 		return nil, ErrDialToSelf
 	}

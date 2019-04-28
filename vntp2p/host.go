@@ -52,6 +52,7 @@ import (
 	// "strings"
 	// "io"
 	// "io/ioutil"
+	"runtime"
 )
 
 const (
@@ -86,6 +87,8 @@ func recoverPersistentData(vdb *LevelDB) *dht.PersistentData {
 
 // ConstructDHT create Kademlia DHT
 func ConstructDHT(ctx context.Context, listenstring string, nodekey *ecdsa.PrivateKey, datadir string, restrictList []*net.IPNet, natm libp2p.Option) (*dht.IpfsDHT, p2phost.Host, error) {
+	_,file,line,_ := runtime.Caller(1)
+	fmt.Printf("host.go:ConstructDHT() caller: %s-%d \n", file, line)
 
 	var pd *dht.PersistentData
 	var vntp2pDB *LevelDB
@@ -207,6 +210,9 @@ func recoverPeerInfosAndBuckets(ctx context.Context, pd *dht.PersistentData, hos
 }
 
 func constructPeerHost(ctx context.Context, listenstring string, nodekey *ecdsa.PrivateKey, restrictList []*net.IPNet, natm libp2p.Option) (p2phost.Host, error) {
+	_,file,line,_ := runtime.Caller(1)
+	fmt.Printf("host.go:constructPeerHost() caller: %s-%d \n", file, line)
+
 	var options []libp2p.Option
 	if nodekey != nil {
 		options = append(options, libp2p.ListenAddrStrings(listenstring), libp2p.Identity(nodekey))

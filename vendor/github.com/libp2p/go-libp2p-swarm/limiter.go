@@ -3,6 +3,8 @@ package swarm
 import (
 	"context"
 	"sync"
+	"fmt"
+	"runtime"
 
 	addrutil "github.com/libp2p/go-addr-util"
 	peer "github.com/libp2p/go-libp2p-peer"
@@ -66,6 +68,9 @@ func newDialLimiterWithParams(df dialfunc, fdLimit, perPeerLimit int) *dialLimit
 // freeFDToken frees FD token and if there are any schedules another waiting dialJob
 // in it's place
 func (dl *dialLimiter) freeFDToken() {
+	_,file,line,_ := runtime.Caller(1)
+	fmt.Printf("limiter.go:dialLimiter.freeFDToken() caller: %s-%d \n", file, line)
+
 	dl.fdConsuming--
 
 	if len(dl.waitingOnFd) > 0 {
@@ -83,6 +88,9 @@ func (dl *dialLimiter) freeFDToken() {
 }
 
 func (dl *dialLimiter) freePeerToken(dj *dialJob) {
+	_,file,line,_ := runtime.Caller(1)
+	fmt.Printf("limiter.go:dialLimiter.freePeerToken() caller: %s-%d \n", file, line)
+
 	// release tokens in reverse order than we take them
 	dl.activePerPeer[dj.peer]--
 	if dl.activePerPeer[dj.peer] == 0 {
@@ -106,6 +114,9 @@ func (dl *dialLimiter) freePeerToken(dj *dialJob) {
 }
 
 func (dl *dialLimiter) finishedDial(dj *dialJob) {
+	_,file,line,_ := runtime.Caller(1)
+	fmt.Printf("limiter.go:dialLimiter.finishedDial() caller: %s-%d \n", file, line)
+
 	dl.lk.Lock()
 	defer dl.lk.Unlock()
 
@@ -117,6 +128,9 @@ func (dl *dialLimiter) finishedDial(dj *dialJob) {
 }
 
 func (dl *dialLimiter) addCheckFdLimit(dj *dialJob) {
+	_,file,line,_ := runtime.Caller(1)
+	fmt.Printf("limiter.go:dialLimiter.addCheckFdLimit() caller: %s-%d \n", file, line)
+
 	if addrutil.IsFDCostlyTransport(dj.addr) {
 		if dl.fdConsuming >= dl.fdLimit {
 			dl.waitingOnFd = append(dl.waitingOnFd, dj)
@@ -131,6 +145,9 @@ func (dl *dialLimiter) addCheckFdLimit(dj *dialJob) {
 }
 
 func (dl *dialLimiter) addCheckPeerLimit(dj *dialJob) {
+	_,file,line,_ := runtime.Caller(1)
+	fmt.Printf("limiter.go:dialLimiter.addCheckPeerLimit() caller: %s-%d \n", file, line)
+
 	if dl.activePerPeer[dj.peer] >= dl.perPeerLimit {
 		wlist := dl.waitingOnPeerLimit[dj.peer]
 		dl.waitingOnPeerLimit[dj.peer] = append(wlist, dj)
@@ -145,6 +162,9 @@ func (dl *dialLimiter) addCheckPeerLimit(dj *dialJob) {
 // If it acquires all needed tokens, it immediately starts the dial, otherwise
 // it will put it on the waitlist for the requested token.
 func (dl *dialLimiter) AddDialJob(dj *dialJob) {
+	_,file,line,_ := runtime.Caller(1)
+	fmt.Printf("limiter.go:dialLimiter.AddDialJob() caller: %s-%d \n", file, line)
+
 	dl.lk.Lock()
 	defer dl.lk.Unlock()
 
@@ -164,6 +184,8 @@ func (dl *dialLimiter) clearAllPeerDials(p peer.ID) {
 // channel when finished. Once the response is sent it also releases all tokens
 // it held during the dial.
 func (dl *dialLimiter) executeDial(j *dialJob) {
+	_,file,line,_ := runtime.Caller(1)
+	fmt.Printf("limiter.go:dialLimiter.executeDial() caller: %s-%d \n", file, line)
 	defer dl.finishedDial(j)
 	if j.cancelled() {
 		return

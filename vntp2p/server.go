@@ -37,6 +37,7 @@ import (
 	ma "github.com/multiformats/go-multiaddr"
 	// kb "github.com/libp2p/go-libp2p-kbucket"
 	// "time"
+	"runtime"
 )
 
 const (
@@ -121,6 +122,9 @@ type peerDrop struct {
 }
 
 func (server *Server) Start() error {
+	_,file,line,_ := runtime.Caller(1)
+	fmt.Printf("server.go:Server.Start() caller: %s-%d \n", file, line)
+
 	log.Info("p2p-test", "server.Protocols", server.Protocols)
 	if server.running {
 		return errors.New("server already running")

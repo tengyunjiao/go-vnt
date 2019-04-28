@@ -52,7 +52,7 @@ func (u *Upgrader) UpgradeListener(t transport.Transport, list manet.Listener) t
 // full libp2p-transport connection.
 func (u *Upgrader) UpgradeOutbound(ctx context.Context, t transport.Transport, maconn manet.Conn, p peer.ID) (transport.Conn, error) {
 	_,file,line,_ := runtime.Caller(1)
-	fmt.Printf("upgrader.go:Upgrader.upgrade() caller: %s-%d \n", file, line)
+	fmt.Printf("upgrader.go:Upgrader.UpgradeOutbound() caller: %s-%d \n", file, line)
 	if p == "" {
 		return nil, ErrNilPeer
 	}
@@ -63,7 +63,7 @@ func (u *Upgrader) UpgradeOutbound(ctx context.Context, t transport.Transport, m
 // full libp2p-transport connection.
 func (u *Upgrader) UpgradeInbound(ctx context.Context, t transport.Transport, maconn manet.Conn) (transport.Conn, error) {
 	_,file,line,_ := runtime.Caller(1)
-	fmt.Printf("upgrader.go:Upgrader.upgrade() caller: %s-%d \n", file, line)
+	fmt.Printf("upgrader.go:Upgrader.UpgradeInbound() caller: %s-%d \n", file, line)
 	return u.upgrade(ctx, t, maconn, "")
 }
 

@@ -34,6 +34,7 @@ import (
 	"github.com/vntchain/go-vnt/rpc"
 	"github.com/vntchain/go-vnt/vntdb"
 	"github.com/vntchain/go-vnt/vntp2p"
+	"runtime"
 )
 
 // Node is a container on which services can be registered.
@@ -136,6 +137,9 @@ func (n *Node) Register(constructor ServiceConstructor) error {
 
 // Start create a live P2P node and starts running it.
 func (n *Node) Start() error {
+	_,file,line,_ := runtime.Caller(1)
+	fmt.Printf("node.go:Node.Start() caller: %s-%d \n", file, line)
+
 	n.lock.Lock()
 	defer n.lock.Unlock()
 

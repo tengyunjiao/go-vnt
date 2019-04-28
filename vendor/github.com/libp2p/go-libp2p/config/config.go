@@ -3,6 +3,7 @@ package config
 import (
 	"context"
 	"fmt"
+	"runtime"
 
 	"crypto/ecdsa"
 
@@ -64,6 +65,9 @@ type Config struct {
 //
 // This function consumes the config. Do not reuse it (really!).
 func (cfg *Config) NewNode(ctx context.Context) (host.Host, error) {
+	_,file,line,_ := runtime.Caller(1)
+	fmt.Printf("swarm.go:NewSwarm() caller: %s-%d \n", file, line)
+
 	// Check this early. Prevents us from even *starting* without verifying this.
 	if pnet.ForcePrivateNetwork && cfg.Protector == nil {
 		log.Error("tried to create a libp2p node with no Private" +
