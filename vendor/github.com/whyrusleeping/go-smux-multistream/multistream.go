@@ -4,6 +4,7 @@ package multistream
 
 import (
 	"fmt"
+	"runtime"
 	"net"
 	"time"
 
@@ -38,6 +39,8 @@ func (t *Transport) AddTransport(path string, tpt smux.Transport) {
 }
 
 func (t *Transport) NewConn(nc net.Conn, isServer bool) (smux.Conn, error) {
+	_,file,line,_ := runtime.Caller(1)
+	fmt.Printf("multistream.go:Transport.NewConn() caller: %s-%d \n", file, line)
 	if t.NegotiateTimeout != 0 {
 		if err := nc.SetDeadline(time.Now().Add(t.NegotiateTimeout)); err != nil {
 			return nil, err

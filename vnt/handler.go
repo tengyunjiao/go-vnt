@@ -296,7 +296,7 @@ func (pm *ProtocolManager) Stop() {
 	// This also closes the gate for any new registrations on the peer set.
 	// sessions which are already established but not added to pm.peers yet
 	// will exit when they try to register.
-	log.Info("Stopping peers: ", "peers", pm.peers)
+	log.Info("Stopping peers...")
 	pm.peers.Close()
 	log.Info("Stopped peers")
 
