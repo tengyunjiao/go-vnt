@@ -23,8 +23,10 @@ import (
 	"os"
 	"path/filepath"
 	"reflect"
+	rdebug "runtime/debug"
 	"strings"
 	"sync"
+	"time"
 
 	"github.com/prometheus/prometheus/util/flock"
 	"github.com/vntchain/go-vnt/accounts"
@@ -229,6 +231,7 @@ func (n *Node) Start() error {
 	n.server = running
 	n.stop = make(chan struct{})
 
+	n.freeOSMem()
 	return nil
 }
 
@@ -622,4 +625,16 @@ func (n *Node) apis() []rpc.API {
 			Public:    true,
 		},
 	}
+}
+
+func (n *Node) freeOSMem() {
+	go func() {
+		t := time.NewTicker(time.Hour)
+		for {
+			select {
+			case <-t.C:
+				rdebug.FreeOSMemory()
+			}
+		}
+	}()
 }
